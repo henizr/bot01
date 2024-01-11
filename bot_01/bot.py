@@ -31,12 +31,23 @@ def start_game(message):
 
 @bot.message_handler(content_types=['text'])
 def answer(message):
-    global is_waiting
-
+    global is_waiting, bot_number
+    
     if is_waiting and message.text == 'готово':
+        bot_number = 1
         bot.send_message(message.chat.id,
-                         f"Я думаю, что твое число - {bot_number}.")  
+                         f"Я думаю, что твое число - {bot_number}. Напиши 'да' или 'нет'.")  
         
+    elif message.text == 'нет':
+        bot_number += 1
+        bot.send_message(message.chat.id,
+                         f"Я думаю, что твое число - {bot_number}. Напиши 'да' или 'нет'.") 
+        
+    elif message.text == 'да':
+        bot.send_message(message.chat.id, 
+                         "Ура! Я угадал! \nЧтобы начать игру заново, используй команду /start_game")
+        bot_number = 0 
 
+    is_waiting = False
 
 bot.polling(none_stop=True, interval=0)
